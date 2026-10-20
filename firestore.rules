@@ -1,0 +1,66 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Función auxiliar: Comprobar si el usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Regla global por defecto: Denegar acceso público
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 1. Clientes (CRM)
+    match /clientes/{clienteId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // 2. Catálogo (Productos y Servicios)
+    match /catalogo/{productoId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // 3. Presupuestos Comerciales
+    match /presupuestos/{presupuestoId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // 4. Partes de Trabajo / Intervenciones en Campo
+    match /trabajos/{trabajoId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // 5. Facturas Oficiales de Venta
+    // Normativa española: Una vez emitida/finalizada una factura, NO se permite su borrado.
+    match /facturas/{facturaId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+                    (!resource.data.keys().hasAll(['bloqueada']) || resource.data.bloqueada == false);
+      allow delete: if false; // Prohibido el borrado físico de facturas (requiere factura rectificativa)
+    }
+
+    // 6. Gastos y Compras de Material
+    match /gastos/{gastoId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // 7. Equipos y Fichas Técnicas (Solar, Electricidad REBT, Ajax/CCTV)
+    match /equipos/{equipoId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // 8. Contadores internos (Numeración correlativa legal de presupuestos y facturas)
+    match /contadores/{contadorId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // 9. Configuración del negocio (Datos fiscales de Laris, series de facturación)
+    match /configuracion/{configId} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}

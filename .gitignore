@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+firestore-debug.log
+
+# Functions build output
+functions/lib/
+functions/node_modules/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+.vscode/
+.idea/
+
+# Xcode / Swift
+*.xcuserstate
+project.xcworkspace
+xcuserdata/
+DerivedData/
+.build/

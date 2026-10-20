@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Función auxiliar: Comprobar autenticación
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Función auxiliar: Validar imagen y tamaño máximo
+    function isImageUnderLimit(maxSizeMB) {
+      return request.resource.contentType.matches('image/.*') &&
+             request.resource.size < maxSizeMB * 1024 * 1024;
+    }
+
+    // Función auxiliar: Validar documento PDF y tamaño máximo
+    function isPDFUnderLimit(maxSizeMB) {
+      return request.resource.contentType == 'application/pdf' &&
+             request.resource.size < maxSizeMB * 1024 * 1024;
+    }
+
+    // 1. Fotos de intervenciones y obras (antes/después, números de serie, esquemas)
+    match /fotos_obras/{trabajoId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && isImageUnderLimit(15);
+    }
+
+    // 2. Documentos PDF generados (presupuestos, facturas oficiales, albaranes firmados)
+    match /documentos/{documentoId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && isPDFUnderLimit(25);
+    }
+
+    // 3. Fotos de tickets de gastos y compras en suministradores
+    match /gastos/{gastoId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+                   (isImageUnderLimit(10) || isPDFUnderLimit(10));
+    }
+  }
+}

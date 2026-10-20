@@ -1,0 +1,34 @@
+name: iOS App Build & Test (GitHub Cloud Runner)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: Compilar App iOS en Mac Cloud Runner
+    runs-on: macos-14 # Runner oficial de GitHub con macOS y Apple Silicon (M2)
+
+    steps:
+      - name: Descargar código fuente
+        uses: actions/checkout@v4
+
+      - name: Seleccionar versión de Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_15.4.app
+          xcodebuild -version
+
+      - name: Copiar GoogleService-Info.plist
+        run: |
+          if [ -f "GoogleService-Info.plist" ]; then
+            echo "GoogleService-Info.plist detectado correctamente."
+          else
+            echo "Aviso: No se encontró GoogleService-Info.plist en la raíz."
+          fi
+
+      - name: Verificar herramientas de Swift
+        run: |
+          swift --version
