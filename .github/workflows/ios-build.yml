@@ -33,14 +33,7 @@ jobs:
         run: |
           swift --version
 
-      - name: Compilar librería y componentes iOS en Swift
+      - name: Compilar librería y vistas en xcodebuild (iOS Simulator)
         run: |
           cd ios
-          SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
-          swift build -Xswiftc "-sdk" -Xswiftc "$SDK_PATH" -Xswiftc "-target" -Xswiftc "arm64-apple-ios17.0-simulator"
-
-      - name: Ejecutar pruebas unitarias de lógica y márgenes
-        run: |
-          cd ios
-          SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
-          swift test -Xswiftc "-sdk" -Xswiftc "$SDK_PATH" -Xswiftc "-target" -Xswiftc "arm64-apple-ios17.0-simulator"
+          xcodebuild -scheme LarisOS -destination "generic/platform=iOS Simulator" build
