@@ -36,9 +36,11 @@ jobs:
       - name: Compilar librería y componentes iOS en Swift
         run: |
           cd ios
-          swift build -v
+          SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
+          swift build -Xswiftc "-sdk" -Xswiftc "$SDK_PATH" -Xswiftc "-target" -Xswiftc "arm64-apple-ios17.0-simulator"
 
       - name: Ejecutar pruebas unitarias de lógica y márgenes
         run: |
           cd ios
-          swift test -v
+          SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
+          swift test -Xswiftc "-sdk" -Xswiftc "$SDK_PATH" -Xswiftc "-target" -Xswiftc "arm64-apple-ios17.0-simulator"
