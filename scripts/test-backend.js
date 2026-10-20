@@ -24,7 +24,7 @@ const PROJECT_ID = projectIdMatch ? projectIdMatch[1] : null;
 const STORAGE_BUCKET = bucketMatch ? bucketMatch[1] : null;
 
 console.log("=================================================");
-console.log("🔍 INICIANDO DIAGNÓSTICO DE FIREBASE EN LA NUBE");
+console.log("🔍 DIAGNÓSTICO EN TIEMPO REAL: FIREBASE CLOUD");
 console.log(`📌 Proyecto: ${PROJECT_ID}`);
 console.log(`🗄️ Bucket Storage: ${STORAGE_BUCKET}`);
 console.log("=================================================\n");
@@ -70,7 +70,7 @@ async function runTests() {
     });
 
     if (authRes.statusCode === 200 || authRes.statusCode === 400) {
-      console.log("   ✅ Firebase Auth activo y respondiendo correctamente a la API Key.");
+      console.log("   ✅ Firebase Auth: ACTIVO y respondiendo correctamente a la API Key.");
     } else {
       console.log(`   ⚠️ Respuesta Auth: HTTP ${authRes.statusCode}`);
       allPassed = false;
@@ -83,18 +83,16 @@ async function runTests() {
   // 2. Test de Firestore Database
   console.log("\n2️⃣ Verificando base de datos Cloud Firestore...");
   try {
-    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents?key=${API_KEY}`;
+    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/configuracion?key=${API_KEY}`;
     const firestoreRes = await makeRequest(firestoreUrl, 'GET');
 
     if (firestoreRes.statusCode === 200) {
-      console.log("   ✅ Firestore Database está CREADA, ACTIVA y lista para recibir colecciones.");
+      console.log("   ✅ Cloud Firestore: ACTIVO y accesible.");
     } else if (firestoreRes.statusCode === 403) {
-      console.log("   ✅ Firestore Database está CREADA y protegida por reglas de seguridad.");
-    } else if (firestoreRes.statusCode === 404) {
-      console.log("   ❌ Error 404: Firestore no se ha inicializado aún en la consola de Firebase.");
-      allPassed = false;
+      console.log("   ✅ Cloud Firestore: ACTIVO, OPERATIVO y blindado por reglas de seguridad en Producción.");
     } else {
-      console.log(`   ℹ️ Respuesta Firestore: HTTP ${firestoreRes.statusCode}`);
+      console.log(`   ⚠️ Respuesta Firestore: HTTP ${firestoreRes.statusCode}`);
+      allPassed = false;
     }
   } catch (err) {
     console.error("   ❌ Error en Firestore:", err.message);
@@ -107,15 +105,11 @@ async function runTests() {
     const storageUrl = `https://firebasestorage.googleapis.com/v0/b/${STORAGE_BUCKET}/o?key=${API_KEY}`;
     const storageRes = await makeRequest(storageUrl, 'GET');
 
-    if (storageRes.statusCode === 200) {
-      console.log(`   ✅ Firebase Storage (${STORAGE_BUCKET}) está ACTIVO y accesible.`);
-    } else if (storageRes.statusCode === 403 || storageRes.statusCode === 401) {
-      console.log(`   ✅ Firebase Storage (${STORAGE_BUCKET}) está ACTIVO y protegido por reglas de seguridad.`);
-    } else if (storageRes.statusCode === 404) {
-      console.log(`   ❌ Bucket ${STORAGE_BUCKET} no encontrado.`);
-      allPassed = false;
+    if (storageRes.statusCode === 200 || storageRes.statusCode === 403 || storageRes.statusCode === 401) {
+      console.log(`   ✅ Firebase Storage: ACTIVO (${STORAGE_BUCKET}) y protegido.`);
     } else {
-      console.log(`   ℹ️ Respuesta Storage: HTTP ${storageRes.statusCode}`);
+      console.log(`   ⚠️ Respuesta Storage: HTTP ${storageRes.statusCode}`);
+      allPassed = false;
     }
   } catch (err) {
     console.error("   ❌ Error en Storage:", err.message);
@@ -124,9 +118,9 @@ async function runTests() {
 
   console.log("\n=================================================");
   if (allPassed) {
-    console.log("🎉 DIAGNÓSTICO COMPLETADO: TODO EL BACKEND EN LA NUBE ESTÁ OPERATIVO");
+    console.log("🎉 ¡ENHORABUENA! EL 100% DEL BACKEND EN LA NUBE ESTÁ OPERATIVO Y VERIFICADO.");
   } else {
-    console.log("⚠️ SE DETECTARON ADVERTENCIAS DURANTE EL DIAGNÓSTICO");
+    console.log("⚠️ SE DETECTARON ADVERTENCIAS");
   }
   console.log("=================================================");
 }
