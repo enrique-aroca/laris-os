@@ -32,3 +32,13 @@ jobs:
       - name: Verificar herramientas de Swift
         run: |
           swift --version
+
+      - name: Compilar librería y componentes iOS en Swift
+        run: |
+          cd ios
+          swift build -v
+
+      - name: Ejecutar pruebas unitarias de lógica y márgenes
+        run: |
+          cd ios
+          swift test -v
