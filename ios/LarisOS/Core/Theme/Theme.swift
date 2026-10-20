@@ -13,9 +13,17 @@ public struct STELTheme {
     public static let statusDanger = Color(red: 0.90, green: 0.25, blue: 0.25) // Rojo
     public static let statusDraft = Color(red: 0.55, green: 0.60, blue: 0.65) // Gris
     
-    // Fondos y Superficies
+    // Fondos y Superficies Adaptativas (iOS y macOS)
+    #if canImport(UIKit)
     public static let background = Color(UIColor.systemGroupedBackground)
     public static let cardBackground = Color(UIColor.secondarySystemGroupedBackground)
+    #elseif canImport(AppKit)
+    public static let background = Color(NSColor.windowBackgroundColor)
+    public static let cardBackground = Color(NSColor.controlBackgroundColor)
+    #else
+    public static let background = Color.gray.opacity(0.1)
+    public static let cardBackground = Color.white
+    #endif
 }
 
 public extension Double {

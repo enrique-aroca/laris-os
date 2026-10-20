@@ -278,7 +278,11 @@ public struct DashboardView: View {
     private func abrirEnMapas(direccion: String) {
         guard let encoded = direccion.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: "http://maps.apple.com/?q=\(encoded)") else { return }
+        #if canImport(UIKit)
         UIApplication.shared.open(url)
+        #elseif canImport(AppKit)
+        NSWorkspace.shared.open(url)
+        #endif
     }
 }
 

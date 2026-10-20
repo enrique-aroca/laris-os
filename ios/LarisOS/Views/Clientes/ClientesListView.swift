@@ -134,7 +134,7 @@ public struct ClientesListView: View {
                 if !cliente.telefono.isEmpty {
                     Button(action: {
                         let limpio = cliente.telefono.filter { "+0123456789".contains($0) }
-                        if let url = URL(string: "tel:\(limpio)") { UIApplication.shared.open(url) }
+                        abrirUrlExterno("tel:\(limpio)")
                     }) {
                         HStack(spacing: 4) {
                             Image(systemName: "phone.fill")
@@ -153,7 +153,7 @@ public struct ClientesListView: View {
                 if !cliente.telefono.isEmpty {
                     Button(action: {
                         let limpio = cliente.telefono.filter { "0123456789".contains($0) }
-                        if let url = URL(string: "https://wa.me/\(limpio)") { UIApplication.shared.open(url) }
+                        abrirUrlExterno("https://wa.me/\(limpio)")
                     }) {
                         HStack(spacing: 4) {
                             Image(systemName: "message.fill")
@@ -171,9 +171,8 @@ public struct ClientesListView: View {
                 // 3. Ruta GPS en Mapas
                 if !cliente.direccion.isEmpty {
                     Button(action: {
-                        if let encoded = cliente.direccionCompleta.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                           let url = URL(string: "http://maps.apple.com/?q=\(encoded)") {
-                            UIApplication.shared.open(url)
+                        if let encoded = cliente.direccionCompleta.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                            abrirUrlExterno("http://maps.apple.com/?q=\(encoded)")
                         }
                     }) {
                         HStack(spacing: 4) {
@@ -194,6 +193,15 @@ public struct ClientesListView: View {
         .background(STELTheme.cardBackground)
         .cornerRadius(14)
         .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
+    }
+    
+    private func abrirUrlExterno(_ urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        #if canImport(UIKit)
+        UIApplication.shared.open(url)
+        #elseif canImport(AppKit)
+        NSWorkspace.shared.open(url)
+        #endif
     }
 }
 
