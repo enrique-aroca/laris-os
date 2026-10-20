@@ -1,18 +1,46 @@
-# Dependencies
+# =======================================================
+# PRIVACIDAD Y SEGURIDAD - ARCHIVOS SENSIBLES / SECRETOS
+# =======================================================
+
+# Credenciales y configuración privada de Firebase
+GoogleService-Info.plist
+*GoogleService-Info*.plist
+serviceAccountKey*.json
+*service-account*.json
+firebase-debug.log*
+firestore-debug.log*
+
+# Documentos internos, especificaciones y datos de clientes
+*.xlsx
+*.xls
+*.csv
+*.docx
+*.pdf
+
+# Variables de entorno y claves secretas
+.env
+.env.*
+!.env.example
+
+# Certificados y claves de firma de Apple
+*.p8
+*.p12
+*.cer
+*.mobileprovision
+*.signingkey
+
+# =======================================================
+# DEPENDENCIAS Y COMPILACIÓN
+# =======================================================
 node_modules/
 package-lock.json
-
-# Firebase
-.firebase/
-firebase-debug.log
-firebase-debug.*.log
-firestore-debug.log
-
-# Functions build output
 functions/lib/
 functions/node_modules/
+.firebase/
 
-# OS and IDE files
+# =======================================================
+# ARCHIVOS DE SISTEMA Y EDITORES
+# =======================================================
 .DS_Store
 Thumbs.db
 *.swp
@@ -20,7 +48,9 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Xcode / Swift
+# =======================================================
+# XCODE / SWIFT BUILD ARTIFACTS
+# =======================================================
 *.xcuserstate
 project.xcworkspace
 xcuserdata/
